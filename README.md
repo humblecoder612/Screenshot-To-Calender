@@ -2,11 +2,10 @@
 <!--  ┃  S C R E E N S H O T   ➜   C A L E N D A R ┃  -->
 <!--  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  -->
 
-Screenshot → Calendar workflow
 
 
 <div align="center">
-
+Screenshot → Calendar workflow
 📸 Take a screenshot → 📂 auto‑sync to Drive → 🦅 Mistral OCR → ✨ Gemini LLM → 🗓️ Google Calendar → 🔔 Slack ping  
 <sub><sup>Zero clicks. Zero forgotten tasks.</sup></sub>
 
