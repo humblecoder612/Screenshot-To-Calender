@@ -2,18 +2,14 @@
 <!--  ┃  S C R E E N S H O T   ➜   C A L E N D A R ┃  -->
 <!--  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  -->
 
-<p align="center">
-  <img src="docs/banner.png" width="850" alt="Screenshot → Calendar workflow banner">
-</p>
+Screenshot → Calendar workflow
+
 
 <div align="center">
 
 📸 Take a screenshot → 📂 auto‑sync to Drive → 🦅 Mistral OCR → ✨ Gemini LLM → 🗓️ Google Calendar → 🔔 Slack ping  
 <sub><sup>Zero clicks. Zero forgotten tasks.</sup></sub>
 
-[![n8n](https://img.shields.io/badge/built%20with-n8n-2087d1?style=flat&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9IiNmZmYiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTEiIGZpbGw9IiMwMDg3ZmYiLz48cGF0aCBkPSJNMTIgNmE2IDYgMCAxIDAgMCAxMiA2IDYgMCAwIDAgMC0xMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://n8n.io)
-![License](https://img.shields.io/github/license/yourname/screenshot-to-calendar?color=informational)
-![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)
 
 </div>
 
@@ -34,7 +30,7 @@ A bite‑sized automation that **reads every screenshot you take** and—if it c
 | 6️⃣  | **Slack Webhook** (optional) | Sends you a heads‑up DM. |
 
 <p align="center">
-  <img src="docs/diagram.png" width="780" alt="Workflow diagram">
+  <img src="./diagram.png" width="780" alt="Workflow diagram">
 </p>
 
 ---
