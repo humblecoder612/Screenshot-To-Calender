@@ -2,10 +2,11 @@
 <!--  ┃  S C R E E N S H O T   ➜   C A L E N D A R ┃  -->
 <!--  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  -->
 
+<h1 align="center">📸 Screenshot → Calendar Workflow 🗓️</h1>
+
 
 
 <div align="center">
-Screenshot → Calendar workflow
 📸 Take a screenshot → 📂 auto‑sync to Drive → 🦅 Mistral OCR → ✨ Gemini LLM → 🗓️ Google Calendar → 🔔 Slack ping  
 <sub><sup>Zero clicks. Zero forgotten tasks.</sup></sub>
 
@@ -32,6 +33,9 @@ A bite‑sized automation that **reads every screenshot you take** and—if it c
   <img src="./diagram.png" width="780" alt="Workflow diagram">
 </p>
 
+<p align="center">
+  <img src="./n8n.png" width="780" alt="Workflow diagram">
+</p>
 ---
 
 ## 🚀 Quick start
