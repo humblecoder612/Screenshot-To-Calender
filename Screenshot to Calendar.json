@@ -1,0 +1,565 @@
+{
+  "name": "Screenshot to Calender",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "hour": 1
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1WLxJQkYCriKtXCzMS1Gfg9esFRvh8XZn",
+          "mode": "list",
+          "cachedResultName": "TODO",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1WLxJQkYCriKtXCzMS1Gfg9esFRvh8XZn"
+        },
+        "event": "fileCreated",
+        "options": {
+          "fileType": "all"
+        }
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        -220
+      ],
+      "id": "40a0f7ac-5345-43ea-89d2-2b67fe0d6537",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "1MfdkgFuaHCpVgh5",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "limit": 5,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1WLxJQkYCriKtXCzMS1Gfg9esFRvh8XZn",
+            "mode": "list",
+            "cachedResultName": "TODO",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1WLxJQkYCriKtXCzMS1Gfg9esFRvh8XZn"
+          }
+        },
+        "options": {
+          "fields": [
+            "*"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -180,
+        -240
+      ],
+      "id": "e35fc20b-b31d-41a9-b45d-04f4d26dec3a",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "1MfdkgFuaHCpVgh5",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        420,
+        -220
+      ],
+      "id": "f0cd6c84-75ff-439b-abcc-e02332454bf7",
+      "name": "Download file",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "1MfdkgFuaHCpVgh5",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mistral.ai/v1/files",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "purpose",
+              "value": "ocr"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1020,
+        -220
+      ],
+      "id": "f4f9ada4-907c-4cce-b5f8-9a67a49c8b8c",
+      "name": "Upload to Mistral",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "weSEzpNCElX4ZTDv",
+          "name": "Mistral"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.mistral.ai/v1/files/{{ $json.id }}/url",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "expiry",
+              "value": "24"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1240,
+        -220
+      ],
+      "id": "1b673b2a-17e0-4028-bfbc-7bed16d7038b",
+      "name": "Mistral url",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "weSEzpNCElX4ZTDv",
+          "name": "Mistral"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mistral.ai/v1/ocr",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"mistral-ocr-latest\",\n  \"document\": {\n    \"type\": \"image_url\",\n    \"image_url\": \"{{ $json.url }}\"\n  },\n  \"include_image_base64\": false\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1180,
+        -480
+      ],
+      "id": "ab3a84e5-5100-4ed8-aba0-8b5f21c65fc6",
+      "name": "Mistral OCR",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "weSEzpNCElX4ZTDv",
+          "name": "Mistral"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.pages[0].markdown }} and today date is {{ $json.today }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a productivity assistant. My goal is to never forget important people or tasks that appear in screenshots, especially from emails or other time-sensitive messages.\n\nYou will receive:\n• plain text extracted from a screenshot\n• the screenshot’s creation date-time (ISO 8601)\n\nYour job is to return a structured JSON object following the rules below.\n\n────────────────────────────────\nRULES\n1. important\n   • Set \"important\": true if the text includes any of:\n     – keywords: \"meeting\", \"interview\", \"invoice\", \"deadline\", \"submit\", \"appointment\"\n     – an email address (example@example.com)\n     – wording that clearly implies a follow-up or time-sensitive action\n\n2. ignore\n   • Set \"ignore\": true if the screenshot seems to be:\n     – an image of a person with no actionable text\n     – an Instagram post\n   • Otherwise set \"ignore\": false (LinkedIn, email, phone number, Slack/Teams message, etc.).\n\n3. event fields\n   • If \"important\" is true **and** \"ignore\" is false:\n       – \"event_title\": a concise title (e.g., \"Follow-up: careers@axiommath.ai\")\n       – \"event_time\":\n           • If a date/time appears in the text, output that in ISO 8601 (UTC).\n           • Otherwise, default to the next work-day at 09:00 America/Los_Angeles\n             and output the corresponding UTC timestamp.\n       – \"event_notes\": any helpful context (e.g., the email address or brief summary).\n   • If \"important\" is false or \"ignore\" is true, set all three event fields to null.\n\n────────────────────────────────\nOUTPUT FORMAT\nReturn **one** raw JSON object—no backticks, no code fences, no surrounding array:\n\n{\n  \"important\": true/false,\n  \"event_title\": string | null,\n  \"event_time\": string | null,   // ISO 8601\n  \"event_notes\": string | null,\n  \"ignore\": true/false\n}\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        2200,
+        -160
+      ],
+      "id": "99b00cd4-db84-42d7-be53-63ed1e038dee",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1900,
+        220
+      ],
+      "id": "9afcf5ca-cbca-46ab-a6f8-fc2cd6607ffe",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "bTHfFE9bpCKYy6Ud",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bc6bd833-828f-461f-a5e9-64b902b9dfae",
+              "name": "pages[0].markdown",
+              "value": "={{ $json.pages[0].markdown }}",
+              "type": "string"
+            },
+            {
+              "id": "7eb27202-b881-4c3e-90ea-bef07c649a16",
+              "name": "today",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1540,
+        -400
+      ],
+      "id": "61912131-6134-4480-a6ab-2518086bc969",
+      "name": "Edit Fields",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw   = $json.text;\nconst clean = raw.replace(/```json\\n?/, \"\").replace(/```/, \"\").trim();\nconst data  = JSON.parse(clean);\n\n// Make ISO start Date ➜ add 1 hour ➜ new ISO\nif (data.event_time) {\n  const start = new Date(data.event_time);\n  const end   = new Date(start.getTime() + 60 * 60 * 1000); // +1 h\n  data.end_time = end.toISOString();                        // <- NEW FIELD\n}\n\nreturn [{ json: data }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2560,
+        -160
+      ],
+      "id": "876f867a-de9f-4396-a6ce-96c6ed1642c5",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "be7b182f-6784-43c3-97e0-560f02ae183d",
+              "leftValue": "={{ $json.event_title }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "2e91fd48-dc0c-4cb2-8a37-db85b02d52f9",
+              "leftValue": "={{ $json.event_time }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "dateTime",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "b56740f6-8e08-42c5-9593-f2b20d76ddec",
+              "leftValue": "={{ $json.ignore }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "cb3eaff6-966d-40d9-9455-1a4ba085e2b8",
+              "leftValue": "={{ $json.important }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2780,
+        -160
+      ],
+      "id": "a250517b-fbcc-48d1-9665-a04983912364",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "yash612@gmail.com",
+          "mode": "list",
+          "cachedResultName": "yash612@gmail.com"
+        },
+        "start": "={{ $json.event_time }}",
+        "end": "={{ $json.end_time }}",
+        "additionalFields": {
+          "description": "={{ $json.event_notes }}",
+          "summary": "={{ $json.event_title }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2760,
+        160
+      ],
+      "id": "4e024069-3acb-430d-922d-439f6580c1bb",
+      "name": "Create an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "40OkIo4nuW2IfDz0",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3000,
+        -260
+      ],
+      "id": "5c36c246-2b71-4db7-a518-b9b6ad062da4",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Filter out items without a usable createdTime\nconst withTime = items.filter(it => it.json && it.json.createdTime);\n\n// Sort descending (latest first)\nwithTime.sort((a, b) => new Date(b.json.createdTime) - new Date(a.json.createdTime));\n\n// Take top 3 (or fewer if less available)\nconst top3 = withTime.slice(0, 3);\n\n// Return as items (n8n expects array of {json:{...}})\nreturn top3;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        140,
+        -220
+      ],
+      "id": "6a0a45cd-de0f-44c7-84a3-102914091030",
+      "name": "Code1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Upload to Mistral",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Mistral": {
+      "main": [
+        [
+          {
+            "node": "Mistral url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral url": {
+      "main": [
+        [
+          {
+            "node": "Mistral OCR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral OCR": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create an event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a409d6b3-4815-4fdf-ada1-aa6d0e6960e8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "94d4577a65ce5717ff5f602bf28f28da5fbf8b254d953913fb015ba31be039e4"
+  },
+  "id": "7l6GQXIjzfWOMRxi",
+  "tags": []
+}
