@@ -6,13 +6,15 @@
 
 
 
-<div align="center">
-📸 Take a screenshot → 📂 auto‑sync to Drive → 🦅 Mistral OCR → ✨ Gemini LLM → 🗓️ Google Calendar → 🔔 Slack ping  
-<sub><sup>Zero clicks. Zero forgotten tasks.</sup></sub>
+<p align="center">
+  📸 Take a screenshot → 📂 auto‑sync to Drive → 🦅 Mistral OCR → ✨ Gemini LLM → 🗓️ Google Calendar → 🔔 Slack ping<br>
+  <small><em>Zero clicks. Zero forgotten tasks.</em></small>
+</p>
 
 
-</div>
-
+<p align="center">
+  <img src="./n8n.png" width="780" alt="Workflow diagram">
+</p>
 ---
 
 ## ✨ What is this?
@@ -33,9 +35,6 @@ A bite‑sized automation that **reads every screenshot you take** and—if it c
   <img src="./diagram.png" width="780" alt="Workflow diagram">
 </p>
 
-<p align="center">
-  <img src="./n8n.png" width="780" alt="Workflow diagram">
-</p>
 ---
 
 ## 🚀 Quick start
